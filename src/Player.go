@@ -14,10 +14,9 @@ type Player struct {
 	CurrentLeague string
 }
 
-
-func PlayerWorker(wg *sync.WaitGroup, pc chan Player, playerName string) {
-	player := Player{
-		PlayerName:  playerName,
+func NewPlayer() Player {
+	return Player{
+		PlayerName:  "",
 		Age:         0,
 		Height:      0,
 		Position:    "",
@@ -25,6 +24,11 @@ func PlayerWorker(wg *sync.WaitGroup, pc chan Player, playerName string) {
 		CurrentTeam: "",
 		CurrentLeague: "",
 	}
+}
+
+func PlayerWorker(wg *sync.WaitGroup, pc chan Player, playerName string) {
+	player := NewPlayer()
+	player.PlayerName = playerName
 
 	pc <- player
 	defer wg.Done()

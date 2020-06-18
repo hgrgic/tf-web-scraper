@@ -7,17 +7,20 @@ type League struct {
 	Teams []Team
 }
 
+func NewLeague(leagueName string) League {
+	return League{
+		LeagueName: leagueName,
+		Teams:      []Team{},
+	}
+}
+
 func monitorLeagueWorker(wg *sync.WaitGroup, tc chan Team) {
 	wg.Wait()
 	close(tc)
 }
 
 func ScrapeLeague(leagueName string) League{
-	league := League{
-		LeagueName: leagueName,
-		Teams:      []Team{},
-	}
-
+	league := NewLeague(leagueName)
 	lwg := &sync.WaitGroup{}
 	tc := make(chan Team)
 
@@ -25,11 +28,7 @@ func ScrapeLeague(leagueName string) League{
 
 	for _, team := range teams{
 		lwg.Add(1)
-		t := Team{
-			TeamName:   team,
-			LeagueName: league.LeagueName,
-			Players:    []Player{},
-		}
+		t := NewTeam(team, leagueName)
 		go t.TeamWorker(lwg, tc)
 	}
 

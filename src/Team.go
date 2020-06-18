@@ -10,6 +10,14 @@ type Team struct {
 	Players []Player
 }
 
+func NewTeam(teamName string, leagueName string) Team{
+	return Team{
+		TeamName:   teamName,
+		LeagueName: leagueName,
+		Players:    []Player{},
+	}
+}
+
 func monitorTeamWorker(wg *sync.WaitGroup, pc chan Player) {
 	wg.Wait()
 	close(pc)
