@@ -1,15 +1,19 @@
 package entities
 
 import (
+	"fmt"
+	"strings"
 	"sync"
+	"tf-scrapper/src"
 )
 
 type Player struct {
 	PlayerName string
-	Age int8
-	Height int16
+	Age string
+	Height string
 	Position string
 	Foot string
+	Nationality string
 	CurrentTeam string
 	CurrentLeague string
 }
@@ -17,8 +21,8 @@ type Player struct {
 func NewPlayer() Player {
 	return Player{
 		PlayerName:  "",
-		Age:         0,
-		Height:      0,
+		Age:         "",
+		Height:      "",
 		Position:    "",
 		Foot:        "",
 		CurrentTeam: "",
@@ -26,10 +30,40 @@ func NewPlayer() Player {
 	}
 }
 
-func PlayerWorker(wg *sync.WaitGroup, pc chan Player, playerName string) {
-	player := NewPlayer()
-	player.PlayerName = playerName
+func (p *Player) setPlayerFields(fieldName string, fieldValue string) {
+	switch fieldName {
+	case "Age:":
+		p.Age = fieldValue
+	case "Height:":
+		p.Height = fieldValue
+	case "Position:":
+		p.Position = fieldValue
+	case "Foot:":
+		p.Foot = fieldValue
+	case "Nationality:":
+		p.Nationality = fieldValue
+	default:
+		fmt.Println("Field name could not be matched")
+	}
+}
 
+func PlayerWorker(wg *sync.WaitGroup, pc chan Player, playerUrl string) {
+	player := NewPlayer()
+
+	//Scraping for player details
+	doc := src.ReadUrl(src.BASE_URL + playerUrl)
+
+	player.PlayerName = doc.Find("div", "class", "dataMain").Find("h1").FullText()
+
+	for _, entry := range doc.Find("table", "class", "auflistung").FindAll("th"){
+		key := strings.TrimSpace(entry.FullText())
+		_, present := src.ElementsOfIntrest[key]
+		if present {
+			val := strings.TrimSpace(entry.FindNextSibling().FindNextSibling().FullText())
+			player.setPlayerFields(key,val)
+			//fmt.Println(key, val)
+		}
+	}
 	pc <- player
 	defer wg.Done()
 }

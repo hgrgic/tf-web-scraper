@@ -2,13 +2,16 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"regexp"
 	"tf-scrapper/src"
 	"tf-scrapper/src/entities"
+	"time"
 )
 
 
 func main() {
+	start := time.Now()
 	doc := src.ReadUrl(src.LEAGUES_URL)
 	leagueTable := doc.Find("table", "class", "items").Find("tbody")
 	leagues := leagueTable.FindAll("a")
@@ -31,4 +34,7 @@ func main() {
 			//fmt.Println("Link :", league.Attrs()["href"])
 		}
 	}
+
+	elapsed := time.Since(start)
+	log.Printf("It took %s", elapsed)
 }

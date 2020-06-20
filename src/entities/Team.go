@@ -28,7 +28,7 @@ func (team Team) TeamWorker(lwg *sync.WaitGroup, tc chan Team) {
 	twg := &sync.WaitGroup{}
 	pc := make(chan Player)
 
-	//Scraping for team urls
+	//Scraping for player urls
 	doc := src.ReadUrl(src.BASE_URL + team.TeamUrl)
 	playersTable := doc.Find("table", "class", "items")
 	players := playersTable.FindAll("a", "class", "spielprofil_tooltip")
