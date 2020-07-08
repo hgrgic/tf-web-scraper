@@ -57,7 +57,7 @@ func PlayerWorker(wg *sync.WaitGroup, pc chan Player, playerUrl string) {
 
 	for _, entry := range doc.Find("table", "class", "auflistung").FindAll("th"){
 		key := strings.TrimSpace(entry.FullText())
-		_, present := src.ElementsOfIntrest[key]
+		_, present := src.PlayerDetailColumns[key]
 		if present {
 			val := strings.TrimSpace(entry.FindNextSibling().FindNextSibling().FullText())
 			player.setPlayerFields(key,val)

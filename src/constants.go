@@ -10,6 +10,5 @@ const (
 )
 
 var (
-	ElementsOfIntrest = map[string]bool{"Age:": true, "Height:": true,"Nationality:": true, "Position:": true,
-		"Foot:": true,}
+	PlayerDetailColumns = map[string] bool {"Age:": true, "Height:": true,"Nationality:": true, "Position:": true, "Foot:": true,}
 )
